@@ -9,7 +9,7 @@ public class PageController {
      *
      * 1. 查询所有的部门
      * 2. 查询前50个用户
-     * 3. 查询用户列表，要支持分页
+     * 3. 查询用户列表，要支持分页   ?page=1&size=100
      *
      */
     public void GetPagePermissionUsersParams() {
