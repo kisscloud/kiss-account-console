@@ -37,7 +37,7 @@ public class PagePermissionController {
     @GetMapping("/accounts")
     public ResultOutput GetPagePermissionUsersParams() {
 
-        ResultOutput accountsOutput = accountServiceFeign.getAccounts("1", "50");
+        ResultOutput accountsOutput = accountServiceFeign.getAccounts("1", "10");
         ResultOutput groupsOutput = accountServiceFeign.getGroups();
 
         Map<String, Object> result = new HashMap<>();
@@ -54,10 +54,12 @@ public class PagePermissionController {
     public ResultOutput GetPagePermissionRolesParams() {
 
         ResultOutput roles = roleServiceFeign.getRoles();
-        ResultOutput permissions = permissionServiceFeign.getBindPermissions();
+        ResultOutput modules = permissionServiceFeign.getBindPermissionsModules();
+        ResultOutput permissions = permissionServiceFeign.getPermissions();
 
         Map<String, Object> result = new HashMap<>();
         result.put("roles", roles.getData());
+        result.put("modules", modules.getData());
         result.put("permissions", permissions.getData());
 
         return ResultOutputUtil.success(result);
@@ -70,7 +72,7 @@ public class PagePermissionController {
     public ResultOutput GetPagePermissionPermissionsParams() {
 
         ResultOutput permissions = permissionServiceFeign.getPermissions();
-        ResultOutput modules = permissionServiceFeign.getPermissionsModules();
+        ResultOutput modules = permissionServiceFeign.getBindPermissionsModules();
 
         Map<String, Object> result = new HashMap<>();
         result.put("permissions", permissions.getData());
