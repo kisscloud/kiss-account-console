@@ -86,6 +86,18 @@ public class AccountServiceController {
         return roleServiceFeign.updateRole(updateRoleInput);
     }
 
+    @PostMapping("/role/permissions")
+    @ApiOperation(value = "绑定角色权限")
+    public ResultOutput bindRolePermissions(@RequestBody BindPermissionToRoleInput bindPermissionToRoleInput) {
+        return roleServiceFeign.bindRolePermissions(bindPermissionToRoleInput);
+    }
+
+    @PostMapping("/role/accounts")
+    @ApiOperation(value = "绑定角色账户")
+    public ResultOutput bindRoleAccounts(@RequestBody BindAccountsToRoleInput bindAccountsToRoleInput) {
+        return roleServiceFeign.bindRoleAccounts(bindAccountsToRoleInput);
+    }
+
     @GetMapping("/role/accountIds/permissionIds")
     @ApiOperation(value = "获取角色的账户权限列表")
     public ResultOutput getRoleAccountIdsAndPermissionIds(Integer id) {
