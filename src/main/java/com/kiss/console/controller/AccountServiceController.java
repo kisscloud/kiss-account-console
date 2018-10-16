@@ -2,18 +2,26 @@ package com.kiss.console.controller;
 
 import com.kiss.account.input.*;
 import com.kiss.console.feign.account.AccountServiceFeign;
+import com.kiss.console.feign.account.AuthServiceFeign;
 import com.kiss.console.feign.account.PermissionServiceFeign;
 import com.kiss.console.feign.account.RoleServiceFeign;
+import com.kiss.console.utils.ResultOutputUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import output.ResultOutput;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/service/account")
 @Api(tags = "AccountAPI", description = "账户服务相关API")
 public class AccountServiceController {
+
+    @Autowired
+    private AuthServiceFeign authServiceFeign;
 
     @Autowired
     private AccountServiceFeign accountServiceFeign;
@@ -24,7 +32,13 @@ public class AccountServiceController {
     @Autowired
     private PermissionServiceFeign permissionServiceFeign;
 
-    @PostMapping("/")
+    @PostMapping("/login")
+    @ApiOperation(value = "账户登录")
+    public ResultOutput login(@RequestBody LoginInput loginInput) {
+        return authServiceFeign.loginWithUsernameAndPassword(loginInput);
+    }
+
+    @PostMapping
     @ApiOperation(value = "添加账户")
     public ResultOutput createAccount(@RequestBody CreateAccountInput createAccountInput) {
         return accountServiceFeign.createAccount(createAccountInput);
@@ -66,10 +80,24 @@ public class AccountServiceController {
         return roleServiceFeign.createRole(createRoleInput);
     }
 
-    @PostMapping("/role")
+    @PutMapping("/role")
     @ApiOperation(value = "更新角色")
     public ResultOutput updateRole(@RequestBody UpdateRoleInput updateRoleInput) {
         return roleServiceFeign.updateRole(updateRoleInput);
+    }
+
+    @GetMapping("/role/accountIds/permissionIds")
+    @ApiOperation(value = "获取角色的账户权限列表")
+    public ResultOutput getRoleAccountIdsAndPermissionIds(Integer id) {
+
+        ResultOutput accounts = roleServiceFeign.getRoleAccountIds(id);
+        ResultOutput permissions = roleServiceFeign.getRolePermissionIds(id);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("accounts", accounts.getData());
+        result.put("permissions", permissions.getData());
+
+        return ResultOutputUtil.success(result);
     }
 
     @DeleteMapping("/role")
