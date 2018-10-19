@@ -24,7 +24,7 @@ public class ResponseFilter implements InnerFilter {
             JSONObject jsonObject = JSONObject.parseObject(responseMsg);
             String lang = request.getHeader("X-LANGUAGE");
             if(!StringUtils.isEmpty(lang) && !StringUtils.isEmpty(jsonObject.getInteger("code")) && StringUtils.isEmpty(jsonObject.getString("message"))) {
-                String message = CodeUtil.getMessage(lang,jsonObject.getInteger("code"));
+                String message = CodeUtil.getMessage(lang,jsonObject.get("code"));
                 jsonObject.put("message",message);
                 bytes = jsonObject.toJSONString().getBytes();
             }

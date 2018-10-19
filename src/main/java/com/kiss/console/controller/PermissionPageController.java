@@ -2,9 +2,7 @@ package com.kiss.console.controller;
 
 
 import com.kiss.account.output.RoleOutput;
-import com.kiss.console.feign.account.AccountServiceFeign;
-import com.kiss.console.feign.account.PermissionServiceFeign;
-import com.kiss.console.feign.account.RoleServiceFeign;
+import com.kiss.console.feign.account.*;
 import com.kiss.console.utils.ResultOutputUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,10 +26,17 @@ public class PermissionPageController {
     private AccountServiceFeign accountServiceFeign;
 
     @Autowired
+    private AccountGroupServiceFeign accountGroupServiceFeign;
+
+    @Autowired
     private PermissionServiceFeign permissionServiceFeign;
 
     @Autowired
+    private PermissionModuleServiceFeign permissionModuleServiceFeign;
+
+    @Autowired
     private RoleServiceFeign roleServiceFeign;
+
 
     /**
      * 获取用户管理页面参数
@@ -44,7 +49,7 @@ public class PermissionPageController {
     public ResultOutput GetPagePermissionUsersParams() {
 
         ResultOutput accountsOutput = accountServiceFeign.getAccounts("1", "10");
-        ResultOutput groupsOutput = accountServiceFeign.getGroups();
+        ResultOutput groupsOutput = accountGroupServiceFeign.getGroups();
 
         Map<String, Object> result = new HashMap<>();
         result.put("accounts", accountsOutput.getData());
@@ -61,7 +66,7 @@ public class PermissionPageController {
     public ResultOutput GetPagePermissionRolesParams() {
 
         ResultOutput roles = roleServiceFeign.getRoles();
-        ResultOutput modules = permissionServiceFeign.getBindPermissionModules();
+        ResultOutput modules = permissionModuleServiceFeign.getBindPermissionModules();
         ResultOutput permissions = permissionServiceFeign.getPermissions();
         ResultOutput accounts = accountServiceFeign.getAccounts("1", "0");
 
@@ -92,7 +97,7 @@ public class PermissionPageController {
     public ResultOutput GetPagePermissionPermissionsParams() {
 
         ResultOutput permissions = permissionServiceFeign.getPermissions();
-        ResultOutput modules = permissionServiceFeign.getBindPermissionModules();
+        ResultOutput modules = permissionModuleServiceFeign.getBindPermissionModules();
 
         Map<String, Object> result = new HashMap<>();
         result.put("permissions", permissions.getData());
