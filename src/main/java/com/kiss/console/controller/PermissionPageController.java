@@ -48,7 +48,7 @@ public class PermissionPageController {
     @ApiOperation(value = "获取成员管理页面参数")
     public ResultOutput GetPagePermissionUsersParams() {
 
-        ResultOutput accountsOutput = accountServiceFeign.getAccounts("1", "10");
+        ResultOutput accountsOutput = accountServiceFeign.getAccounts("1", "0");
         ResultOutput groupsOutput = accountGroupServiceFeign.getGroups();
 
         Map<String, Object> result = new HashMap<>();

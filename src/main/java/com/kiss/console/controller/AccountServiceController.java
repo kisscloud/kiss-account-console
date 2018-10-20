@@ -55,12 +55,19 @@ public class AccountServiceController {
 
     @PutMapping("/dimission")
     @ApiOperation(value = "用户离职")
-    public ResultOutput updateAccountStatus(@RequestBody UpdateAccountStatusInput updateAccountStatusInput) {
+    public ResultOutput updateAccountStatusDimission(@RequestBody UpdateAccountStatusInput updateAccountStatusInput) {
         updateAccountStatusInput.setStatus(2);
         return accountServiceFeign.updateAccountStatus(updateAccountStatusInput);
     }
 
-    @PutMapping("/password")
+    @PutMapping("/resume")
+    @ApiOperation(value = "用户复职")
+    public ResultOutput updateAccountStatusResume(@RequestBody UpdateAccountStatusInput updateAccountStatusInput) {
+        updateAccountStatusInput.setStatus(1);
+        return accountServiceFeign.updateAccountStatus(updateAccountStatusInput);
+    }
+
+    @PutMapping("/reset/password")
     @ApiOperation(value = "重置账户密码")
     public ResultOutput updateAccountPassword(Integer id) {
         return accountServiceFeign.updateAccountPassword(id);
@@ -76,6 +83,12 @@ public class AccountServiceController {
     @ApiOperation(value = "更新部门")
     public ResultOutput updateAccountGroup(@RequestBody UpdateAccountGroupInput updateAccountGroupInput) {
         return accountGroupServiceFeign.updateAccountGroup(updateAccountGroupInput);
+    }
+
+    @DeleteMapping("/group")
+    @ApiOperation(value = "删除部门")
+    public ResultOutput deleteAccountGroup(Integer id) {
+        return accountGroupServiceFeign.deleteGroup(id);
     }
 
     @PostMapping("/role")
