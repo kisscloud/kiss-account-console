@@ -120,7 +120,7 @@ public class AccountServiceController {
     public ResultOutput getRoleAccountIdsAndPermissionIds(Integer id) {
 
         ResultOutput accounts = roleServiceFeign.getRoleAccountIds(id);
-        ResultOutput permissions = roleServiceFeign.getRolePermissionIds(id);
+        ResultOutput permissions = roleServiceFeign.getRolePermissions(id);
 
         Map<String, Object> result = new HashMap<>();
         result.put("accounts", accounts.getData());

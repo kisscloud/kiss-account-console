@@ -1,17 +1,20 @@
 package com.kiss.console.controller;
 
 
+import com.kiss.account.output.PermissionOutput;
 import com.kiss.account.output.RoleOutput;
 import com.kiss.console.feign.account.*;
 import com.kiss.console.utils.ResultOutputUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import output.ResultOutput;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,12 +73,16 @@ public class PermissionPageController {
         ResultOutput permissions = permissionServiceFeign.getPermissions();
         ResultOutput accounts = accountServiceFeign.getAccounts("1", "0");
 
-        List<RoleOutput> roleOutputs = (List<RoleOutput>) roles.getData();
-        ResultOutput firstRolePermissions = new ResultOutput();
+        List<Object> roleOutputs = (List<Object>) roles.getData();
+
         ResultOutput firstRoleAccounts = new ResultOutput();
+        ResultOutput firstRolePermissions = new ResultOutput();
+
         if (!roleOutputs.isEmpty()) {
-            firstRolePermissions = roleServiceFeign.getRolePermissionIds(roleOutputs.get(0).getId());
-            firstRoleAccounts = roleServiceFeign.getRoleAccountIds(roleOutputs.get(0).getId());
+            RoleOutput firstRole = new RoleOutput();
+            BeanUtils.copyProperties(roleOutputs.get(0), firstRole);
+            firstRolePermissions = roleServiceFeign.getRolePermissions(firstRole.getId());
+            firstRoleAccounts = roleServiceFeign.getRoleAccountIds(firstRole.getId());
         }
 
         Map<String, Object> result = new HashMap<>();
