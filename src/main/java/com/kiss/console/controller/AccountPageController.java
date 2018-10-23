@@ -1,7 +1,5 @@
 package com.kiss.console.controller;
 
-
-import com.kiss.account.output.PermissionOutput;
 import com.kiss.account.output.RoleOutput;
 import com.kiss.console.feign.account.*;
 import com.kiss.console.utils.ResultOutputUtil;
@@ -14,16 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import output.ResultOutput;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 @RestController
-@RequestMapping("/page/permission")
-@Api(tags = "PermissionPage", description = "权限管理相关页面接口")
-public class PermissionPageController {
+@RequestMapping("/page/account")
+@Api(tags = "AccountPage", description = "权限管理相关页面接口")
+public class AccountPageController {
 
     @Autowired
     private AccountServiceFeign accountServiceFeign;
@@ -41,12 +38,18 @@ public class PermissionPageController {
     private RoleServiceFeign roleServiceFeign;
 
 
-    /**
-     * 获取用户管理页面参数
-     * <p>
-     * 1. 查询所有的部门
-     * 2. 查询前50个
-     */
+    @GetMapping("/dashboard")
+    @ApiOperation(value = "获取主面板页面参数")
+    public ResultOutput getPageDashboardParams() {
+
+        ResultOutput accountGtroupsCount = accountServiceFeign.getAccountsCount();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("accountGroups", accountGtroupsCount.getData());
+
+        return ResultOutputUtil.success(result);
+    }
+
     @GetMapping("/accounts")
     @ApiOperation(value = "获取成员管理页面参数")
     public ResultOutput GetPagePermissionUsersParams() {
@@ -61,9 +64,6 @@ public class PermissionPageController {
         return ResultOutputUtil.success(result);
     }
 
-    /**
-     * 获取角色页面参数
-     */
     @GetMapping("/roles")
     @ApiOperation(value = "获取角色管理页面参数")
     public ResultOutput GetPagePermissionRolesParams() {
@@ -96,15 +96,12 @@ public class PermissionPageController {
         return ResultOutputUtil.success(result);
     }
 
-    /**
-     * 获取权限页面参数
-     */
     @GetMapping("/permissions")
     @ApiOperation(value = "获取权限管理页面参数")
     public ResultOutput GetPagePermissionPermissionsParams() {
 
         ResultOutput permissions = permissionServiceFeign.getPermissions();
-        ResultOutput modules = permissionModuleServiceFeign.getBindPermissionModules();
+        ResultOutput modules = permissionModuleServiceFeign.getPermissionModules();
 
         Map<String, Object> result = new HashMap<>();
         result.put("permissions", permissions.getData());
