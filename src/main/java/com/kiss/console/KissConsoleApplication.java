@@ -9,7 +9,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 @EnableFeignClients
-//@EnableEurekaClient
 @EnableDiscoveryClient
 public class KissConsoleApplication {
 

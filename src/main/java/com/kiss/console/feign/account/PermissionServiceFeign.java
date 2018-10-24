@@ -1,6 +1,5 @@
 package com.kiss.console.feign.account;
 
-import com.kiss.account.client.AccountClient;
 import com.kiss.account.client.PermissionClient;
 import com.kiss.console.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
