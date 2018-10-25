@@ -5,6 +5,7 @@ import com.kiss.console.feign.account.*;
 import com.kiss.console.utils.ResultOutputUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import output.ResultOutput;
@@ -34,6 +35,15 @@ public class AccountServiceController {
 
     @Autowired
     private RoleServiceFeign roleServiceFeign;
+
+    @Autowired
+    private ClientServiceFeign clientServiceFeign;
+
+    @Autowired
+    private ClientModuleServiceFeign clientModuleServiceFeign;
+
+    @Autowired
+    private OperationLogServiceFeign operationLogServiceFeign;
 
     @PostMapping("/login")
     @ApiOperation(value = "账户登录")
@@ -169,5 +179,42 @@ public class AccountServiceController {
     @ApiOperation(value = "删除权限模块")
     public ResultOutput deletePermissionModule(Integer id) {
         return permissionModuleServiceFeign.deletePermissionModule(id);
+    }
+
+    @PostMapping("/client")
+    @ApiOperation(value = "添加授权客户端")
+    public ResultOutput postClient(@RequestBody CreateClientInput createClientInput) {
+        return clientServiceFeign.createClient(createClientInput);
+    }
+
+    @PutMapping("/client")
+    @ApiOperation(value = "更新授权客户端")
+    public ResultOutput putClient(@RequestBody UpdateClientInput updateClientInput) {
+        return clientServiceFeign.updateClient(updateClientInput);
+    }
+
+    @DeleteMapping("/client")
+    @ApiOperation(value = "删除授权客户端")
+    public ResultOutput deleteClient(@RequestParam("id") Integer id) {
+        return clientServiceFeign.deleteClient(id);
+    }
+
+    @PutMapping("/client/modules")
+    @ApiOperation(value = "绑定客户端的权限模块")
+    public ResultOutput updateClientModules(@RequestBody UpdateClientModulesInput updateClientModulesInput) {
+        return clientModuleServiceFeign.updateClientModules(updateClientModulesInput);
+    }
+
+    @GetMapping("/client/modules")
+    @ApiOperation(value = "获取客户端的权限模块")
+    public ResultOutput getClientModules(@RequestParam("id") Integer id) {
+        return clientModuleServiceFeign.getClientModules(id);
+    }
+
+
+    @GetMapping("/operation/logs")
+    @ApiOperation(value = "获取操作日志")
+    public ResultOutput getOperationLogs(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return operationLogServiceFeign.getOperationLogs(page, size);
     }
 }

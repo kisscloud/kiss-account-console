@@ -1,5 +1,6 @@
 package com.kiss.console.controller;
 
+import com.kiss.account.output.ClientOutput;
 import com.kiss.account.output.RoleOutput;
 import com.kiss.console.feign.account.*;
 import com.kiss.console.utils.ResultOutputUtil;
@@ -9,12 +10,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import output.ResultOutput;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -37,15 +37,33 @@ public class AccountPageController {
     @Autowired
     private RoleServiceFeign roleServiceFeign;
 
+    @Autowired
+    private ClientServiceFeign clientServiceFeign;
+
+    @Autowired
+    private ClientModuleServiceFeign clientModuleServiceFeign;
+
+    @Autowired
+    private OperationLogServiceFeign operationLogServiceFeign;
+
 
     @GetMapping("/dashboard")
     @ApiOperation(value = "获取主面板页面参数")
     public ResultOutput getPageDashboardParams() {
 
-        ResultOutput accountGtroupsCount = accountServiceFeign.getAccountsCount();
+        ResultOutput accountGroupsCount = accountGroupServiceFeign.getAccountGroupsCount();
+        ResultOutput rolesCount = roleServiceFeign.getValidRolesCount();
+        ResultOutput permissionsCount = permissionServiceFeign.getValidPermissionsCount();
+        ResultOutput accountsCount = accountServiceFeign.getValidAccountsCount();
+        ResultOutput recentOptionLogs = operationLogServiceFeign.getOperationLogs(1, 10);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("accountGroups", accountGtroupsCount.getData());
+        result.put("accountsCount", accountsCount.getData());
+        result.put("rolesCount", rolesCount.getData());
+        result.put("accountGroupsCount", accountGroupsCount.getData());
+        result.put("permissionsCount", permissionsCount.getData());
+        result.put("recentOptionLogs", recentOptionLogs.getData());
+
 
         return ResultOutputUtil.success(result);
     }
@@ -73,16 +91,14 @@ public class AccountPageController {
         ResultOutput permissions = permissionServiceFeign.getPermissions();
         ResultOutput accounts = accountServiceFeign.getAccounts("1", "0");
 
-        List<Object> roleOutputs = (List<Object>) roles.getData();
-
+        List<Map<String, Object>> roleOutputs = (List<Map<String, Object>>) roles.getData();
         ResultOutput firstRoleAccounts = new ResultOutput();
         ResultOutput firstRolePermissions = new ResultOutput();
 
         if (!roleOutputs.isEmpty()) {
-            RoleOutput firstRole = new RoleOutput();
-            BeanUtils.copyProperties(roleOutputs.get(0), firstRole);
-            firstRolePermissions = roleServiceFeign.getRolePermissions(firstRole.getId());
-            firstRoleAccounts = roleServiceFeign.getRoleAccountIds(firstRole.getId());
+            Integer firRoleId = (Integer) roleOutputs.get(0).get("id");
+            firstRolePermissions = roleServiceFeign.getRolePermissions(firRoleId);
+            firstRoleAccounts = roleServiceFeign.getRoleAccountIds(firRoleId);
         }
 
         Map<String, Object> result = new HashMap<>();
@@ -106,6 +122,30 @@ public class AccountPageController {
         Map<String, Object> result = new HashMap<>();
         result.put("permissions", permissions.getData());
         result.put("modules", modules.getData());
+
+        return ResultOutputUtil.success(result);
+    }
+
+    @GetMapping("/clients")
+    @ApiOperation(value = "获取客户端管理页面参数")
+    public ResultOutput getPagePermissionClientsParams() {
+
+        ResultOutput allModules = permissionModuleServiceFeign.getBindPermissionModules();
+        ResultOutput clients = clientServiceFeign.getClients();
+        ResultOutput modules = new ResultOutput();
+
+        List<Map<String, Object>> clientObjects = (List<Map<String, Object>>) clients.getData();
+
+        if (!clientObjects.isEmpty()) {
+            modules = clientModuleServiceFeign.getClientModules((Integer) clientObjects.get(0).get("id"));
+        }
+
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("clients", clients.getData());
+        result.put("allModules", allModules.getData());
+        result.put("firstClientModules", modules.getData());
+
 
         return ResultOutputUtil.success(result);
     }
