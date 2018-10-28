@@ -1,5 +1,6 @@
 package com.kiss.console.Filter;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -10,6 +11,7 @@ import java.io.IOException;
 
 @Component
 @WebFilter(filterName = "responseFilter",urlPatterns = "/*")
+@Order(value = 2)
 public class ConsoleFilter implements Filter {
 
     @Override
