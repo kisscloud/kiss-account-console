@@ -186,6 +186,12 @@ public class AccountServiceController {
         return clientServiceFeign.createClient(createClientInput);
     }
 
+    @PostMapping("/client/secret")
+    @ApiOperation(value = "获取客户端秘钥")
+    public ResultOutput getClientSecret(@RequestBody GetClientSecretInput getClientSecretInput) {
+        return clientServiceFeign.getClientSecret(getClientSecretInput);
+    }
+
     @PutMapping("/client")
     @ApiOperation(value = "更新授权客户端")
     public ResultOutput putClient(@RequestBody UpdateClientInput updateClientInput) {
