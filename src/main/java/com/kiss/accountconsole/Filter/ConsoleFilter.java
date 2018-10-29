@@ -1,7 +1,10 @@
 package com.kiss.accountconsole.Filter;
 
+import com.kiss.accountconsole.enums.CodeEnums;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -14,9 +17,14 @@ import java.io.IOException;
 @Order(value = 2)
 public class ConsoleFilter implements Filter {
 
+    private CodeEnums codeEnums;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
+        ServletContext servletContext = filterConfig.getServletContext();
+        WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        codeEnums = context.getBean(CodeEnums.class);
     }
 
     @Override
@@ -27,7 +35,7 @@ public class ConsoleFilter implements Filter {
         chain.doFilter(request,responseWrapper);
 
         InnerFilterChain innerFilterChain = new InnerFilterChain();
-        innerFilterChain.addFilter(new ResponseFilter(responseWrapper));
+        innerFilterChain.addFilter(new ResponseFilter(responseWrapper,codeEnums));
         innerFilterChain.doFilter(httpServletRequest,httpServletResponse,innerFilterChain);
     }
 

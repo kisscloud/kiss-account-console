@@ -12,8 +12,12 @@ public class ResponseFilter implements InnerFilter {
 
     private ResponseWrapper responseWrapper;
 
-    public ResponseFilter (ResponseWrapper responseWrapper) {
+    private CodeEnums codeEnums;
+
+
+    public ResponseFilter (ResponseWrapper responseWrapper,CodeEnums codeEnums) {
         this.responseWrapper = responseWrapper;
+        this.codeEnums = codeEnums;
     }
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response,InnerFilterChain filterChain) {
@@ -24,7 +28,7 @@ public class ResponseFilter implements InnerFilter {
             JSONObject jsonObject = JSONObject.parseObject(responseMsg);
             String lang = request.getHeader("X-LANGUAGE");
             if(!StringUtils.isEmpty(lang) && !StringUtils.isEmpty(jsonObject.getInteger("code")) && StringUtils.isEmpty(jsonObject.getString("message"))) {
-                String message = CodeEnums.getMessage(lang,jsonObject.get("code"));
+                String message = codeEnums.getMessage(Integer.parseInt(jsonObject.get("code").toString()));
                 jsonObject.put("message",message);
                 bytes = jsonObject.toJSONString().getBytes();
             }

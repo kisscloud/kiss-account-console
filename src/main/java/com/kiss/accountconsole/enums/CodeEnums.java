@@ -1,10 +1,8 @@
 package com.kiss.accountconsole.enums;
 
+import org.springframework.stereotype.Component;
 import status.CodeMessage;
 
-import java.io.UnsupportedEncodingException;
-
+@Component
 public class CodeEnums extends CodeMessage {
-    public CodeEnums() throws UnsupportedEncodingException {
-    }
 }
