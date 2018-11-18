@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import output.ResultOutput;
 
+import javax.naming.InvalidNameException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,33 +53,33 @@ public class AccountServiceController {
 
     @PostMapping
     @ApiOperation(value = "添加账户")
-    public ResultOutput createAccount(@RequestBody CreateAccountInput createAccountInput) {
+    public ResultOutput createAccount(@RequestBody CreateAccountInput createAccountInput) throws InvalidNameException {
         return accountServiceFeign.createAccount(createAccountInput);
     }
 
     @PutMapping
     @ApiOperation(value = "更新账户信息")
-    public ResultOutput updateAccount(@RequestBody UpdateAccountInput updateAccountInput) {
+    public ResultOutput updateAccount(@RequestBody UpdateAccountInput updateAccountInput) throws InvalidNameException {
         return accountServiceFeign.updateAccount(updateAccountInput);
     }
 
     @PutMapping("/dimission")
     @ApiOperation(value = "用户离职")
-    public ResultOutput updateAccountStatusDimission(@RequestBody UpdateAccountStatusInput updateAccountStatusInput) {
+    public ResultOutput updateAccountStatusDimission(@RequestBody UpdateAccountStatusInput updateAccountStatusInput) throws InvalidNameException {
         updateAccountStatusInput.setStatus(2);
         return accountServiceFeign.updateAccountStatus(updateAccountStatusInput);
     }
 
     @PutMapping("/resume")
     @ApiOperation(value = "用户复职")
-    public ResultOutput updateAccountStatusResume(@RequestBody UpdateAccountStatusInput updateAccountStatusInput) {
+    public ResultOutput updateAccountStatusResume(@RequestBody UpdateAccountStatusInput updateAccountStatusInput) throws InvalidNameException {
         updateAccountStatusInput.setStatus(1);
         return accountServiceFeign.updateAccountStatus(updateAccountStatusInput);
     }
 
     @PutMapping("/reset/password")
     @ApiOperation(value = "重置账户密码")
-    public ResultOutput updateAccountPassword(Integer id) {
+    public ResultOutput updateAccountPassword(Integer id) throws InvalidNameException {
         return accountServiceFeign.updateAccountPassword(id);
     }
 
@@ -146,7 +147,7 @@ public class AccountServiceController {
 
     @PostMapping("/permission")
     @ApiOperation(value = "添加权限")
-    public ResultOutput createPermission(@RequestBody CreatePermissionInput createPermissionInput) {
+    public ResultOutput createPermission(@RequestBody CreatePermissionInput createPermissionInput) throws NoSuchFieldException, IllegalAccessException {
         return permissionServiceFeign.createPermission(createPermissionInput);
     }
 

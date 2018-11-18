@@ -1,4 +1,4 @@
-package com.kiss.accountconsole.utils;
+package com.kiss.accountconsole.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,22 +12,22 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class Swagger2Util {
+public class Swagger2Config {
 
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.kiss.console.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.kiss.accountconsole.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("kiss Console API")
-                .description("后台管理API")
+                .title("账户服务控制台")
+                .description("")
                 .termsOfServiceUrl("https://kisscloud.io")
                 .version("1.0")
                 .build();
