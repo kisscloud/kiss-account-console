@@ -217,7 +217,6 @@ public class AccountServiceController {
         return clientModuleServiceFeign.getClientModules(id);
     }
 
-
     @GetMapping("/operation/logs")
     @ApiOperation(value = "获取操作日志")
     public ResultOutput getOperationLogs(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
