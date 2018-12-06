@@ -79,8 +79,8 @@ public class AccountServiceController {
 
     @PutMapping("/reset/password")
     @ApiOperation(value = "重置账户密码")
-    public ResultOutput updateAccountPassword(Integer id) throws InvalidNameException {
-        return accountServiceFeign.updateAccountPassword(id);
+    public ResultOutput resetAccountPassword(Integer id) throws InvalidNameException {
+        return accountServiceFeign.resetAccountPassword(id);
     }
 
     @PostMapping("/group")
@@ -222,5 +222,17 @@ public class AccountServiceController {
     @ApiOperation(value = "获取操作日志")
     public ResultOutput getOperationLogs(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
         return operationLogServiceFeign.getOperationLogs(page, size);
+    }
+
+    @GetMapping("/root/check")
+    @ApiOperation(value = "检查超级管理员")
+    public ResultOutput checkRoot() {
+        return accountServiceFeign.checkRoot();
+    }
+
+    @PostMapping("/root/check")
+    @ApiOperation(value = "创建超级管理员")
+    public ResultOutput createRoot(@RequestBody CreateAccountInput createAccountInput) {
+        return accountServiceFeign.createRoot(createAccountInput);
     }
 }
