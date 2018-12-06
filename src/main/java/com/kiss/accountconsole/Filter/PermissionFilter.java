@@ -45,7 +45,7 @@ public class PermissionFilter implements Filter {
 
         HttpServletRequest requestWrapper = null;
         boolean loginBoolean = false;
-        if (!uri.contains("/service/account/login") && !uri.contains("swagger") && !uri.contains("api-docs")) {
+        if (!uri.contains("/service/account/login") && !uri.contains("/service/account/root/check") && !uri.contains("/service/account/root") && !uri.contains("swagger") && !uri.contains("api-docs")) {
 
             //除登录接口，都需要校验权限
             AccountServiceFeign accountServiceFeign = ac.getBean(AccountServiceFeign.class);

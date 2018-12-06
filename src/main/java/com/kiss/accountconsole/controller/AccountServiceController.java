@@ -229,7 +229,7 @@ public class AccountServiceController {
         return accountServiceFeign.checkRoot();
     }
 
-    @PostMapping("/root/check")
+    @PostMapping("/root")
     @ApiOperation(value = "创建超级管理员")
     public ResultOutput createRoot(@RequestBody CreateAccountInput createAccountInput) {
         return accountServiceFeign.createRoot(createAccountInput);
