@@ -1,8 +1,8 @@
 package com.kiss.accountconsole.enums;
 
+import enums.StatusCodeEnums;
 import org.springframework.stereotype.Component;
-import status.CodeMessage;
 
 @Component
-public class CodeEnums extends CodeMessage {
+public class AccountConsoleCodeEnums extends StatusCodeEnums {
 }

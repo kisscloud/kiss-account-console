@@ -1,23 +1,20 @@
 package com.kiss.accountconsole.Filter;
 
-import com.alibaba.fastjson.JSONObject;
 import com.kiss.accountconsole.feign.account.AccountServiceFeign;
 import com.kiss.accountconsole.permission.GetRequestPermission;
 import com.kiss.accountconsole.permission.PostRequestPermission;
-import com.kiss.accountconsole.utils.ResultOutputUtil;
+import exception.StatusException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import output.ResultOutput;
 import utils.JwtUtil;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -50,13 +47,7 @@ public class PermissionFilter implements Filter {
             //除登录接口，都需要校验权限
             AccountServiceFeign accountServiceFeign = ac.getBean(AccountServiceFeign.class);
             Integer id = JwtUtil.getUserId(token);
-            ResultOutput resultOutput = accountServiceFeign.getAccountPermissions(id);
-            Object object = resultOutput.getData();
-            List<String> permissions = new ArrayList<>();
-
-            if ( object != null) {
-                permissions = (List<String>) resultOutput.getData();
-            }
+            List<String>  permissions = accountServiceFeign.getAccountPermissions(id);
 
             boolean permissionFlag = true;
 
@@ -73,8 +64,7 @@ public class PermissionFilter implements Filter {
             if (!StringUtils.isEmpty(method) && !method.equals("OPTIONS") && permissionFlag) {
                 loginBoolean = true;
                 //获取权限列表
-                ResultOutput dataScopeResult = accountServiceFeign.getAccountPermissionDataScope(id,permissionCode);
-                Object dataScopeObj = dataScopeResult.getData();
+                List<String>  dataScopeObj = accountServiceFeign.getAccountPermissionDataScope(id,permissionCode);
 
                 if (dataScopeObj == null ) {
                     setResponseParameter(response);
@@ -124,7 +114,6 @@ public class PermissionFilter implements Filter {
     public void setResponseParameter (ServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
         response.setCharacterEncoding("UTF-8");
-        ResultOutput resultOutput1 = ResultOutputUtil.error(HttpStatus.SC_FORBIDDEN, "权限不足", null);
-        response.getWriter().write(JSONObject.toJSONString(resultOutput1));
+        throw  new StatusException(HttpStatus.SC_FORBIDDEN, "权限不足");
     }
 }

@@ -1,6 +1,6 @@
 package com.kiss.accountconsole.Filter;
 
-import com.kiss.accountconsole.enums.CodeEnums;
+import com.kiss.accountconsole.utils.LangUtil;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
@@ -13,18 +13,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-@WebFilter(filterName = "responseFilter",urlPatterns = "/*")
+@WebFilter(filterName = "responseFilter", urlPatterns = "/*")
 @Order(value = 2)
 public class ConsoleFilter implements Filter {
 
-    private CodeEnums codeEnums;
+    private LangUtil langUtil;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
         ServletContext servletContext = filterConfig.getServletContext();
         WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-        codeEnums = context.getBean(CodeEnums.class);
+        langUtil = context.getBean(LangUtil.class);
     }
 
     @Override
@@ -32,11 +32,11 @@ public class ConsoleFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         ResponseWrapper responseWrapper = new ResponseWrapper(httpServletResponse);
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        chain.doFilter(request,responseWrapper);
+        chain.doFilter(request, responseWrapper);
 
         InnerFilterChain innerFilterChain = new InnerFilterChain();
-        innerFilterChain.addFilter(new ResponseFilter(responseWrapper,codeEnums));
-        innerFilterChain.doFilter(httpServletRequest,httpServletResponse,innerFilterChain);
+        innerFilterChain.addFilter(new ResponseFilter(responseWrapper, langUtil));
+        innerFilterChain.doFilter(httpServletRequest, httpServletResponse, innerFilterChain);
     }
 
     @Override

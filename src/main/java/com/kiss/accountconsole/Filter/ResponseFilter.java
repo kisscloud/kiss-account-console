@@ -1,7 +1,8 @@
 package com.kiss.accountconsole.Filter;
 
 import com.alibaba.fastjson.JSONObject;
-import com.kiss.accountconsole.enums.CodeEnums;
+import com.kiss.accountconsole.enums.AccountConsoleCodeEnums;
+import com.kiss.accountconsole.utils.LangUtil;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,24 +13,25 @@ public class ResponseFilter implements InnerFilter {
 
     private ResponseWrapper responseWrapper;
 
-    private CodeEnums codeEnums;
+    private LangUtil langUtil;
 
 
-    public ResponseFilter (ResponseWrapper responseWrapper,CodeEnums codeEnums) {
+    public ResponseFilter(ResponseWrapper responseWrapper, LangUtil langUtil) {
         this.responseWrapper = responseWrapper;
-        this.codeEnums = codeEnums;
+        this.langUtil = langUtil;
     }
+
     @Override
-    public void doFilter(HttpServletRequest request, HttpServletResponse response,InnerFilterChain filterChain) {
-        filterChain.doFilter(request,response,filterChain);
+    public void doFilter(HttpServletRequest request, HttpServletResponse response, InnerFilterChain filterChain) {
+        filterChain.doFilter(request, response, filterChain);
         byte[] bytes = responseWrapper.getBytes();
         try {
-            String responseMsg = new String(bytes,"utf-8");
+            String responseMsg = new String(bytes, "utf-8");
             JSONObject jsonObject = JSONObject.parseObject(responseMsg);
             String lang = request.getHeader("X-LANGUAGE");
-            if(!StringUtils.isEmpty(lang) && !StringUtils.isEmpty(jsonObject.getInteger("code")) && StringUtils.isEmpty(jsonObject.getString("message"))) {
-                String message = codeEnums.getMessage(Integer.parseInt(jsonObject.get("code").toString()));
-                jsonObject.put("message",message);
+            if (!StringUtils.isEmpty(lang) && !StringUtils.isEmpty(jsonObject.getInteger("code")) && StringUtils.isEmpty(jsonObject.getString("message"))) {
+                String message = langUtil.getCodeMessage(Integer.parseInt(jsonObject.get("code").toString()));
+                jsonObject.put("message", message);
                 bytes = jsonObject.toJSONString().getBytes();
             }
         } catch (Exception e) {
